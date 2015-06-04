@@ -13,18 +13,33 @@ import com.BulletRun.main.Projectiles.Bullet;
 import com.BulletRun.main.Projectiles.Explosion;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JPanel;
 import javax.swing.*;
 import java.awt.image.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 
@@ -67,6 +82,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private long slowDownTimerDiff;
     private int slowDownLength = 6000;
     
+    private boolean highscoresLoaded = false;
+    
     
     
     
@@ -76,6 +93,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         setPreferredSize(new Dimension(WIDTH,HEIGHT));
         setFocusable(true);
         requestFocus();
+        
+        
        }
     //METHODS
     public void addNotify(){
@@ -132,6 +151,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
             gameRender();
             gameDraw();
             
+            if(!highscoresLoaded){
+            getHighScores();
+            highscoresLoaded=true;}
+            
             URDTime = (System.nanoTime() - startTime) / 1000000;
             waitTime = targetTime - URDTime;
             
@@ -160,7 +183,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                 s = "Final Score: " + player.getScore();
                 length = (int) g.getFontMetrics().getStringBounds(s, g).getWidth();
                 g.drawString(s, (WIDTH - length) / 2, HEIGHT / 2 + 40);
-                gameDraw();}
+                gameDraw();
+                saveHighScores();}
                 else if(!player.isDead()){
                     g.setColor(new Color(0, 100, 255, 100));
                     g.fillRect(0, 0, WIDTH, HEIGHT);
@@ -725,7 +749,66 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         if(e.getKeyCode() == KeyEvent.VK_Z|e.getKeyCode() == KeyEvent.VK_SPACE){
         player.setFiring(false);}
     }
+    
+    String message = "";
+    String replacement = "";
 
+    private void saveHighScores() {
+        try {
+            Path path = Paths.get("C:\\Users\\muge16\\Downloads\\Bubble Trouble High Scores.txt");
+            Charset charset = StandardCharsets.UTF_8;
+            
+            String content = new String(Files.readAllBytes(path), charset);
+            content = content.replaceAll(content, message += JOptionPane.showInputDialog("Enter a your name") + "\t : \t" + player.getScore());
+            Files.write(path, content.getBytes(charset));
+        } catch (IOException ex) {
+            Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void showHighScores() {
+        try {
+            Scanner s = new Scanner(new File("C:\\Users\\muge16\\Downloads\\Bubble Trouble High Scores.txt"));
+              
+            while(s.hasNext()){
+            
+                String line = s.nextLine();
+                              
+                Scanner r = new Scanner(line).useDelimiter("#");
+                String name = r.next();
+                int score = r.nextInt();
+                message += name + "\t : \t" + score + "\n";
+                replacement += name + "#" + score + "#";
+            }
+            JOptionPane.showMessageDialog(null, "Highscores:\n Name: \t : \t Score:" + message );
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void getHighScores(){
+    
+         try {
+            Scanner s = new Scanner(new File("C:\\Users\\muge16\\Downloads\\Bubble Trouble High Scores.txt"));
+              
+            while(s.hasNext()){
+            
+                String line = s.nextLine();
+                              
+                Scanner r = new Scanner(line).useDelimiter("#");
+                String name = r.next();
+                int score = r.nextInt();
+                message += name + "\t : \t" + score + "\n";
+                
+            }
+            
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
     
       
     }

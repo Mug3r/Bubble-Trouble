@@ -7,7 +7,11 @@ package com.BulletRun.main.main;
 
 import static com.BulletRun.main.main.GamePanel.HEIGHT;
 import static com.BulletRun.main.main.GamePanel.WIDTH;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.swing.JFrame;
 import java.net.URL;
@@ -51,8 +55,15 @@ public class Game {
         window.setSize(new Dimension(WIDTH,HEIGHT + 30));  
         window.setResizable(false);
         window.setVisible(true);
-        hasBeenRun = true;}
+        hasBeenRun = true;
+        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+        cursorImg, new Point(0, 0), "blank cursor");
+        window.getContentPane().setCursor(blankCursor);}
         else{
+        
+        window.dispose();
+            
         window.setContentPane(new GamePanel());  
         
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
