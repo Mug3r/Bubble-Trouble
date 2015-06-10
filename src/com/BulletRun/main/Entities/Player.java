@@ -52,6 +52,7 @@ public class Player {
     1, 2, 3 ,4, 5, 6, 7, 8, 9, 10, 11
     };
     private boolean dead;
+    int damage = 1;
     
     public Player() { 
         
@@ -108,14 +109,14 @@ public class Player {
     }
     
     public void loseLife(){
-    if(!devmode){
+    if(!devmode || !recovering){
         lives--;
         recovering = true;
-        recoveryTimer =System.nanoTime();
-        if(lives<1){
+        recoveryTimer = System.nanoTime();
+        if(lives<=0){
             dead = true;
         }}
-    else lives = 1;
+    
     }
     double threshhold = 0;
     public void increasePower(int i){
@@ -125,6 +126,7 @@ public class Player {
         power = requiredPower[powerLevel];
         threshhold+=0.50;
         if(threshhold >= 1){
+        damage++;
         playerr++;
         threshhold = 0;}}
         return;
@@ -133,6 +135,7 @@ public class Player {
         power -= requiredPower[powerLevel];
         powerLevel++;
         playerr = playerr+2;
+        
     }
     
    }
@@ -209,7 +212,7 @@ public class Player {
         }
         if(recovering){
             long elapsed = (System.nanoTime() - recoveryTimer) / 1000000;
-                if(elapsed > 2000) {
+                if(elapsed > 4000) {
                     recovering = false;
                     recoveryTimer = 0;
         }}

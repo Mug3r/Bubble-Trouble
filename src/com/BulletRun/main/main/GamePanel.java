@@ -23,6 +23,8 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JPanel;
 import javax.swing.*;
 import java.awt.image.*;
@@ -47,7 +49,7 @@ import java.util.logging.Logger;
  *
  * @author Mug3r
  */
-public class GamePanel extends JPanel implements Runnable, KeyListener {
+public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener {
     //FIELDS
     public static int WIDTH = 1280;
     public static int HEIGHT = 920;
@@ -62,7 +64,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private BufferedImage image;
     private Graphics2D g;
     
-    private int FPS = 60;
+    private int FPS = 45;
     private double averageFPS;
     
     public static Player player;
@@ -105,6 +107,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         thread.start();
         }
         addKeyListener(this);
+        addMouseListener(this);
     }
         public void run() {
             
@@ -196,7 +199,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                     s = "Final Score: " + player.getScore();
                     length = (int) g.getFontMetrics().getStringBounds(s, g).getWidth();
                     g.drawString(s, (WIDTH - length) / 2, HEIGHT / 2 + 40);
-                    gameDraw();}
+                    gameDraw();
+                    saveHighScores();}
             
             
                 
@@ -755,12 +759,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     private void saveHighScores() {
         try {
-            Path path = Paths.get("C:\\Users\\muge16\\Downloads\\Bubble Trouble High Scores.txt");
+            Path path = Paths.get("res/Bubble Trouble High Scores.txt");
             Charset charset = StandardCharsets.UTF_8;
             
             String content = new String(Files.readAllBytes(path), charset);
-            content = content.replaceAll(content, message += JOptionPane.showInputDialog("Enter a your name") + "\t : \t" + player.getScore());
+            content = content.replaceAll(content, replacement += JOptionPane.showInputDialog("Enter a your name") + "#" + player.getScore());
             Files.write(path, content.getBytes(charset));
+            
+            showHighScores();
+            
         } catch (IOException ex) {
             Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -768,7 +775,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     
     private void showHighScores() {
         try {
-            Scanner s = new Scanner(new File("C:\\Users\\muge16\\Downloads\\Bubble Trouble High Scores.txt"));
+            Scanner s = new Scanner(new File("res/Bubble Trouble High Scores.txt"));
               
             while(s.hasNext()){
             
@@ -780,8 +787,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                 message += name + "\t : \t" + score + "\n";
                 replacement += name + "#" + score + "#";
             }
-            JOptionPane.showMessageDialog(null, "Highscores:\n Name: \t : \t Score:" + message );
-            
+            JOptionPane.showMessageDialog(null, "Highscores:\n Name: \t : \t Score:\n"  + message );
+            Game.window.dispose();
+            if(JOptionPane.showInputDialog("Continue? Y/N").charAt(0) == 'y' ||JOptionPane.showInputDialog("Continue? Y/N").charAt(0) == 'Y'){
+            Game.start();} else {}
         } catch (FileNotFoundException ex) {
             Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -790,7 +799,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private void getHighScores(){
     
          try {
-            Scanner s = new Scanner(new File("C:\\Users\\muge16\\Downloads\\Bubble Trouble High Scores.txt"));
+            Scanner s = new Scanner(new File("res/Bubble Trouble High Scores.txt"));
               
             while(s.hasNext()){
             
@@ -800,6 +809,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
                 String name = r.next();
                 int score = r.nextInt();
                 message += name + "\t : \t" + score + "\n";
+                replacement += name + "#" + score + "\n";
                 
             }
             
@@ -809,7 +819,46 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         }
         
     }
+
+   
+    public void mouseClicked(MouseEvent e) {
+        
+        
+        
+    }
+
+  
+    public void mousePressed(MouseEvent e) {
+        
+       if(e.getButton() == MouseEvent.BUTTON1){
+        player.setFiring(true);}
+        
+    }
+
+   
+    public void mouseReleased(MouseEvent e) {
+        
+        if(e.getButton() == MouseEvent.BUTTON1){
+        player.setFiring(false);}
+        
+    }
+
+
     
+    public void mouseEntered(MouseEvent e) {
+        
+        
+        
+    }
+
+   
+    public void mouseExited(MouseEvent e) {
+       
+        
+        
+    }
+    
+        
       
     }
 

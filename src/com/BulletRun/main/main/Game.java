@@ -70,7 +70,12 @@ public class Game {
         window.setSize(new Dimension(WIDTH,HEIGHT + 30));  
         window.setResizable(false);
         window.setVisible(true);
-        }
+        
+        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(
+        cursorImg, new Point(0, 0), "blank cursor");
+        window.getContentPane().setCursor(blankCursor);}
+        
         
         
     

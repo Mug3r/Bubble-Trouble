@@ -5,6 +5,7 @@
  */
 package com.BulletRun.main.Entities;
 import com.BulletRun.main.main.GamePanel;
+import static com.BulletRun.main.main.GamePanel.player;
 import java.awt.*;
 /**
  *
@@ -147,7 +148,7 @@ public class Enemy {
     
         
     public void hit(){
-    health--;
+    health-=player.damage;
     hitTimer = System.nanoTime();
     hit = true;
     if(health <= 0){dead = true;}
