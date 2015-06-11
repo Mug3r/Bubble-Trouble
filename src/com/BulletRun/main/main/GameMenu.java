@@ -79,7 +79,7 @@ public static boolean visible = true;
        
        visible = false;
        run();
-       hide();
+       dispose();
        
     }//GEN-LAST:event_jButton1ActionPerformed
 

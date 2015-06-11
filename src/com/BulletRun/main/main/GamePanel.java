@@ -187,7 +187,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
                 length = (int) g.getFontMetrics().getStringBounds(s, g).getWidth();
                 g.drawString(s, (WIDTH - length) / 2, HEIGHT / 2 + 40);
                 gameDraw();
-                saveHighScores();}
+                saveHighScores();
+                }
                 else if(!player.isDead()){
                     g.setColor(new Color(0, 100, 255, 100));
                     g.fillRect(0, 0, WIDTH, HEIGHT);
@@ -790,7 +791,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
             JOptionPane.showMessageDialog(null, "Highscores:\n Name: \t : \t Score:\n"  + message );
             Game.window.dispose();
             if(JOptionPane.showInputDialog("Continue? Y/N").charAt(0) == 'y' ||JOptionPane.showInputDialog("Continue? Y/N").charAt(0) == 'Y'){
-            Game.start();} else {}
+            Game.start();} else {try {
+                thread.join();
+                System.exit(1);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+}
         } catch (FileNotFoundException ex) {
             Logger.getLogger(GamePanel.class.getName()).log(Level.SEVERE, null, ex);
         }
